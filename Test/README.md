@@ -103,3 +103,5 @@
 ![image-20241230154329067](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301543155.png)
 
 ![image-20241230154340489](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301543547.png)
+
+​	在测试期间，Pioneer for Android 的内存使用如上图所示，内存使用峰值可达 61.0MB，相对于系统来说仅占用了 1.0%，这是比较低的。我们又进行了多次测试，平均占用内存在 50MB 左右，占用的内存很少，基本上达到了设计预期。
