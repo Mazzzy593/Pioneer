@@ -61,3 +61,11 @@
 （2）代码开发中不使用第三方库而使用系统推荐的库并且在保证安全性的前提下尽量使用对系统版本要求底的内置库。但是，基于 Pioneer中对 Network 库的使用以保证安全的 TLS 连接，Pioneer for iOS 对系统的要求最低为 iOS12.1。
 
 ​	从上面的数据可以看到，当今 iPhone 设备中系统版本在 iOS 12 以上的设备占有率至少可以达到 94%，因此 Pioneer for iOS 的至少可支持当前市场 iPhone 设备中近 94% 的设备。对于 iOS-iOS，Pioneer 可达到 94% × 94% = 88.36% 的部署覆盖率。
+
+
+
+### Pioneer for Android 测试
+
+​	Pioneer for Android 的目的是设计出耗电量低、CPU 占用低、存储占用低的能够在后台持续运行的、适用范围广的联系人跟踪应用。该测试模块基于 Pioneer for Android 在 HUAWEI-P40 ELS-AN00 以及 HUAWEI nova5 pro SEA-AL10 上的测试数据，给出 Pioneer 应用在正常的工作模式下的功耗、内存使用情况、CPU 占用量、网络使用量等数据。给出上述的测试分析，有助于我们后续对应用的优化，以及去判断应用的普适性，提高开发者对 Pioneer 的信任。
+
+​	实验时，在正常的工作模式下，我们采取 HUAWEI 手机系统的方式来测试能耗信息，利用腾讯 WeTest 平台下的 Perfdog 工具对相应数据进行测试分析，同时周围共构建 10 台 Android 设备和 iOS 设备以模拟正常的交互场景。
