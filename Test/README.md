@@ -91,3 +91,15 @@
 ​	正常工作模式下，Pioneer 的 CPU 占用率非常低，而且对 CPU 的占用并不是连续的。测试中 Pioneer 的 CPU 占用峰值为 10%，但大部分时间 CPU 占用率很低，平均占用率仅为 2%。
 
 ![image-20241230154158838](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301541955.png)
+
+#### 网络报告
+
+​	Pioneer for Android 对网络的使用主要是与 Pioneer 服务器建立连接并交互信息，但这并不是频繁的，换句话说 Pioneer 应用只会定期（至少每天一次）与服务器建立连接并交互信息，因此网络流量消耗在下面：
+
+​	总地来说，Pioneer for Android 在正常的用户身份信息交互阶段并不使用网络，而仅仅在与 Pioneer 服务器交互安全数据时才使用网络，并且这是少量的。
+
+#### 内存报告
+
+![image-20241230154329067](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301543155.png)
+
+![image-20241230154340489](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301543547.png)
