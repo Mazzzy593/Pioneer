@@ -73,3 +73,17 @@ MAC 是在 APP 下载了感染者信息，与本地保存的临时标识符去�
 ![image-20241230155550386](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301555413.png)
 
 此处 Truncate 函数表示截取输入一半的长度。
+
+
+
+​	matching seeds 用于生成 matching keys，生成关系式如下：
+
+![image-20241230155645727](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301556758.png)
+
+Maching key 用于生成每一天的 Contact key，Contact key 从Matching key 的生成过程，与 Maching key 从 Secret key 生成的过程完全相同。
+
+
+
+最后，我们得到了一系列 Contact key，Contact key 用于生成Contact identifier，Contact identifier 是最终用于蓝牙数据交互的临时用户标识符：
+
+![image-20241230155710233](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301557256.png)
