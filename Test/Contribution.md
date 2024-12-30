@@ -87,3 +87,11 @@ Maching key 用于生成每一天的 Contact key，Contact key 从Matching key �
 最后，我们得到了一系列 Contact key，Contact key 用于生成Contact identifier，Contact identifier 是最终用于蓝牙数据交互的临时用户标识符：
 
 ![image-20241230155710233](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301557256.png)
+
+2、国密算法 SM3
+
+​	SM3 杂凑算法是我国自主设计的密码杂凑算法，适用于商用密码应用中的数字签名和验证消息认证码的生成与验证以及随机数的生成，可满足多种密码应用的安全需求。为了保证杂凑算法的安全性，其产生的杂凑值的长度不应太短，SM3 算法的输出长度为 256 比特，有很好的安全性。
+
+​	我们通过 SM3 国密 hash 算法，将 SM3 运用到 contact identifier的链式生成结构上。
+
+​	在 Secret key 的生成过程中，我们通过 SM3 生成基于 hash 函数的随机数生成器，从而生成具有密码学安全性质的伪随机 Secret key。在 payload 中添加 MAC 来保证 payload 的认证性和完整性时，我们通过将 SM3 运用于 HMAC 模式，生成 MAC。
