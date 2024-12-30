@@ -32,4 +32,7 @@
 
 MAC 是在 APP 下载了感染者信息，与本地保存的临时标识符去匹配。MAC 是由 payload 的四项和当天的 Matching Key 通过 HMAC-SHA256生成的。
 
-在匹配成功的情况下，则去验证 MAC，验证通过方可说明该用户是密切接触者，则后台自动上传该用户近 14 天的 Matching Keys。否则，认为该数据包是被伪造的。
+​	在匹配成功的情况下，则去验证 MAC，验证通过方可说明该用户是密切接触者，则后台自动上传该用户近 14 天的 Matching Keys。否则，认为该数据包是被伪造的。
+
+![image-20241230155115449](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301551501.png)
+
