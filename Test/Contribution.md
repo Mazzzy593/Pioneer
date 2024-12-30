@@ -54,5 +54,6 @@ MAC 是在 APP 下载了感染者信息，与本地保存的临时标识符去�
 
 1、临时信息和密钥的 Hash 链式生成
 
-采取以 SM3 算法的方式，以 Secret key 生成 Matching keys 以及生成 contanctkey，由 Secret key 生成 Contact identifier 的过程中涉及到了伪随机数生成器 (PRNG) 和伪随机函数 (PRNF)，前者用于生成伪随机数，后者用于将分布可能不均匀的输入空间映射到分布均匀的输出空间。
+​	采取以 SM3 算法的方式，以 Secret key 生成 Matching keys 以及生成 contanctkey，由 Secret key 生成 Contact identifier 的过程中涉及到了伪随机数生成器 (PRNG) 和伪随机函数 (PRNF)，前者用于生成伪随机数，后者用于将分布可能不均匀的输入空间映射到分布均匀的输出空间。
 
+![image-20241230155342364](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301553445.png)
