@@ -3,3 +3,25 @@
 ​	Pioneer for iOS 的目的是设计出耗电量低、CPU 占用低、存储占用低的能够在后台持续运行的、适用范围广的联系人跟踪应用。该测试模块基于 Pioneer for iOS 在 iPhone 上的测试数据，给出 Pioneer 应用在正常的工作模式下的功耗、内存使用情况、CPU 占用量、网络使用量等数据。这不仅能使开发人员对 Pioneer 进行更细致的优化，同时向公众公开测试数据，以提高对 Pioneer for iOS 的信任。
 
 ​	实验时，在正常的工作模式下使用 Xcode 等工具测试设备 iPhoneXS 的各项测试标准，同时周围共构建 10 台 Android 设备和 iOS 设备以模拟正常的交互场景。
+
+
+
+#### 功耗报告
+
+基于低功耗蓝牙（BLE）的技术，Pioneer for iOS 最主要的测试标准之一是有关功耗的问题。
+
+![image-20241230151701029](https://cdn.jsdelivr.net/gh/lunan0320/pics@main/images/202412202412301517213.png)
+
+​	应用在前台时，主要的耗电量来自于 Display，而 CPU 耗电却较少。当应用在后台时，耗电量也是低的，即无论是前台还是后台 Pioneer foriOS 的耗电等级就系统评估来讲都是 Low 级别的，这正与 Pioneer 的设计初衷相符。
+
+​	此外，当开启了位置传感器这一 Pioneer 可选功能时，前台和后台的耗电量都将因为位置传感器的持续工作而增大（这并没有暴露用户隐私），这对于某些人群来说可能使无法接受的，因此 Pioneer 将这一功能设置为可选功能并在持续进行优化，尽量使耗电量更少。
+
+#### CPU 报告
+
+![image-20241230151900661](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301529373.png)
+
+​	正常工作模式下，Pioneer 的 CPU 占用率非常低，而且对 CPU 的占用并不是连续的。测试中 Pioneer 的 CPU 占用峰值为 13%，但通常平均占用一般是 2～6%。
+
+![image-20241230153003325](https://cdn.jsdelivr.net/gh/lunan0320/Pioneer@main/images/202412301530407.png)
+
+​	Pioneer for iOS 对网络的使用主要是与 Pioneer 服务器建立连接并交互信息，但这并不是频繁的，换句话说 Pioneer 应用只会定期（至少每天一次）与服务器建立连接并交互信息：
