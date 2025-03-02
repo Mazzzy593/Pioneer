@@ -209,15 +209,15 @@ public class PioneerServer {
     				  	  break; 
     				  case("3")://一个字段的upload14天Matchingkeys
     					  user.setId(str.substring(1,12));
-    				  	  System.out.println("id"+user.getId());
+    				  	  System.out.println("Upload id"+user.getId());
     				  	  user.setMatching_keys(str.substring(12));
     				  	  System.out.println("MatchingKeys"+user.getMatching_keys());
     				  	  log=userDao_Imp.Upload(user, token);
   				  	      System.out.println("log"+log); 
     				  	  break; 
-    				  case("4"): //auto upload\
+    				  case("4"): //auto upload
     					  user.setId(str.substring(1,12));
-    				  	  System.out.println("自动上传接触者信息~");
+    				  	  System.out.println("自动上传接触者信息");
     				  	  System.out.println("id"+user.getId());
     				  	  user.setMatching_keys(str.substring(12));
     				  	  System.out.println(user.getMatching_keys());
@@ -225,12 +225,13 @@ public class PioneerServer {
     					  System.out.println("log:"+log); 
     				  	  break; 
     				  case("5"):
-    					  System.out.println("客户端从服务器下载感染者信息~");
+    					  System.out.println("客户端从服务器下载感染者信息");
     					  log=userDao_Imp.Download();
     				  	  System.out.println("log:"+log); 
     				  	  System.out.println("长度:"+log.length()); 
     				  	  break;
     				  case("6"):
+					  	  System.out.println("更新感染者信息");
     					  log=userDao_Imp.Update_Infectedusers();
     				  	  log+=userDao_Imp.Update_Contactedusers();
     				  	  break;
@@ -280,7 +281,7 @@ public class PioneerServer {
     					  }
     					  out.writeUTF(log);
 						  out.flush();
-						  System.out.println("感染者信息下载成功~");
+						  System.out.println("感染者信息下载成功");
 						  break;
     				  }
     				  if(tag.equals("6")) {
