@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-//  事件时间间隔的CSV日志，用于事件后分析和可视化
+//  Android 事件时间间隔的CSV日志，用于事件后分析和可视化
 public class EventTimeIntervalLog extends DefaultSensorDelegate {
     private final TextFile textFile;
     private final PayloadData payloadData;
@@ -47,6 +47,7 @@ public class EventTimeIntervalLog extends DefaultSensorDelegate {
             payloadToSample.put(payload, new Sample());
             return;
         }
+
         final Date now = new Date();
         payloadToTime.put(payload, now);
         sample.add((now.getTime() - time.getTime()) / 1000d);
@@ -58,21 +59,26 @@ public class EventTimeIntervalLog extends DefaultSensorDelegate {
         final List<String> payloadList = new ArrayList<>();
         final String event = csv(eventType.name());
         final String centralPayload = csv(payloadData.shortName());
+
         for (String payload : payloadToSample.keySet()) {
             if (payload.equals(payloadData.shortName())) {
                 continue;
             }
             payloadList.add(payload);
         }
+
         Collections.sort(payloadList);
         for (String payload : payloadList) {
             final Sample sample = payloadToSample.get(payload);
+
             if (sample == null) {
                 continue;
             }
+
             if (sample.mean() == null || sample.standardDeviation() == null || sample.min() == null || sample.max() == null) {
                 continue;
             }
+
             content.append(event);
             content.append(',');
             content.append(centralPayload);
@@ -90,8 +96,61 @@ public class EventTimeIntervalLog extends DefaultSensorDelegate {
             content.append(sample.max());
             content.append('\n');
         }
+
         textFile.overwrite(content.toString());
     }
 
+
+    // MARK:- SensorDelegate
+
+    @Override
+    public void sensor(SensorType sensor, PayloadData didRead, TargetIdentifier fromTarget) {
+        final String payload = didRead.shortName();
+        targetIdentifierToPayload.put(fromTarget, payload);
+        if (eventType == EventType.read) {
+            add(payload);
+        }
+    }
+
+    @Override
+    public void sensor(SensorType sensor, TargetIdentifier didDetect) {
+        if (eventType == EventType.detect) {
+            final String payload = targetIdentifierToPayload.get(didDetect);
+            if (payload == null) {
+                return;
+            }
+            add(payload);
+        }
+    }
+
+    @Override
+    public void sensor(SensorType sensor, Proximity didMeasure, TargetIdentifier fromTarget) {
+        if (eventType == EventType.measure) {
+            final String payload = targetIdentifierToPayload.get(fromTarget);
+            if (payload == null) {
+                return;
+            }
+            add(payload);
+        }
+    }
+
+    @Override
+    public void sensor(SensorType sensor, List<PayloadData> didShare, TargetIdentifier fromTarget) {
+        if (eventType == EventType.share) {
+            final String payload = targetIdentifierToPayload.get(fromTarget);
+            if (payload == null) {
+                return;
+            }
+            add(payload);
+        } else if (eventType == EventType.sharedPeer) {
+            for (final PayloadData sharedPeer : didShare) {
+                final String payload = sharedPeer.shortName();
+                if (payload == null) {
+                    return;
+                }
+                add(payload);
+            }
+        }
+    }
 
 }
