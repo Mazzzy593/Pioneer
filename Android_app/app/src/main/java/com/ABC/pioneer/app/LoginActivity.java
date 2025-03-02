@@ -37,49 +37,6 @@ public class LoginActivity extends AppCompatActivity {
         loginbtn = (Button)findViewById(R.id.btn_login);
         regisbtn_jump = (Button)findViewById(R.id.btn_register_jump);
         et_phone = (EditText)findViewById(R.id.et_phone);
-
-
-        //给loginbtn设置点击登录事件
-        loginbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String phone= et_phone.getText().toString();//输入的电话号码
-
-                //判断输入的手机号是否合法
-                //phone.trim()表示去除左右空格
-                if(phone.trim().length()!= 11||phone.trim() == null)
-                {
-                    Toast.makeText(LoginActivity.this,"请输入正确的手机号",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if(phone.equals("12345678901")){
-                    Intent it=new Intent(LoginActivity.this,MainActivity.class);//启动MainActivity
-                    startActivity(it);
-                    finish();//关闭当前活动
-                }
-                //第一次登陆要先注册手机号
-                else if(sp.getString("PhoneNumber","").equals("")){
-                    Toast.makeText(getApplicationContext(),"此电话号码未在本机注册过，请先注册",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //本地没有存过电话号码
-                else if(!sp.getString("PhoneNumber","默认值").equals(phone)){
-                    Toast.makeText(getApplicationContext(),"此电话号码不是本机注册号码",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //本地有此电话号码记录，登录到主界面
-                else{
-                    Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
-                    startActivity(it);
-                    finish();//关闭当前活动
-                }
-
-
-            }
         });
 
         //给regisbtn设置进入注册界面事件
