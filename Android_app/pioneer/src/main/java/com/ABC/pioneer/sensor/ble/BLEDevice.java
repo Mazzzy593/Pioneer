@@ -146,76 +146,7 @@ public class BLEDevice extends Device {
         return operatingSystem;
     }
 
-    public void operatingSystem(DeviceOperatingSystem operatingSystem) {
-        lastUpdatedAt = new Date();
-        // 设置忽略时间戳
-        if (operatingSystem == DeviceOperatingSystem.ignore) {
-            if (ignoreForDuration == null) {
-                ignoreForDuration = TimeInterval.minute;
-            } else if (ignoreForDuration.value < TimeInterval.minutes(3).value) {
-                ignoreForDuration = new TimeInterval(Math.round(ignoreForDuration.value * 1.2));
-            }
-            ignoreUntil = new Date(lastUpdatedAt.getTime() + ignoreForDuration.millis());
-        } else {
-            ignoreUntil = null;
-        }
-        //如果已确认操作系统，则重置持续时间和请求计数的忽略
-        if (operatingSystem == DeviceOperatingSystem.ios || operatingSystem == DeviceOperatingSystem.android) {
-            ignoreForDuration = null;
-        }
-        //设置操作系统
-        if (this.operatingSystem != operatingSystem) {
-            this.operatingSystem = operatingSystem;
-            delegate.device(this, DeviceAttribute.operatingSystem);
-        }
-    }
-
-    /// 时间判断之后忽略该设备
-    public boolean ignore() {
-        if (ignoreUntil == null) {
-            return false;
-        }
-        if (new Date().getTime() < ignoreUntil.getTime()) {
-            return true;
-        }
-        return false;
-    }
-
-    public PayloadData payloadData() {
-        return payloadData;
-    }
-
-    public void payloadData(PayloadData payloadData) {
-        this.payloadData = payloadData;
-        lastPayloadDataUpdate = new Date();
-        lastUpdatedAt = lastPayloadDataUpdate;
-        delegate.device(this, DeviceAttribute.payloadData);
-    }
-
-    public TimeInterval timeIntervalSinceLastPayloadDataUpdate() {
-        if (lastPayloadDataUpdate == null) {
-            return TimeInterval.never;
-        }
-        return new TimeInterval((new Date().getTime() - lastPayloadDataUpdate.getTime()) / 1000);
-    }
-
-    public void immediateSendData(Data immediateSendData) {
-        this.immediateSendData = immediateSendData;
-    }
-
-    public Data immediateSendData() {
-        return immediateSendData;
-    }
-
-    public RSSI rssi() {
-        return rssi;
-    }
-
-    public void rssi(RSSI rssi) {
-        this.rssi = rssi;
-        lastUpdatedAt = new Date();
-        delegate.device(this, DeviceAttribute.rssi);
-    }
+   
 
     public void legacyPayloadCharacteristic(BluetoothGattCharacteristic characteristic) {
         this.legacyPayloadCharacteristic = characteristic;
