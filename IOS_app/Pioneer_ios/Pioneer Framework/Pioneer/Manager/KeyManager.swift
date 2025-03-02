@@ -104,7 +104,6 @@ public class KeyManager {
         let n = KeyManager.periods
 
         /**
-         
          面向安全接触密钥种子是由一个带有截断的反向哈希链生成的，以确保将来的密钥不能从历史密钥中派生。这与生成匹配密钥种子的过程相同。种子永远不会通过手机传送。它们在密码学上具有挑战性，难以从广播接触人密钥中泄露，而在给定匹配密钥或私密密钥的情况下很容易生成。
          */
         var contactKeySeed: [ContactKeySeed] = Array(repeating: ContactKeySeed(), count: n + 1)
@@ -141,40 +140,7 @@ public class KeyManager {
 }
 
 
-private class KeyF {
-    
-    
-    fileprivate static func h(_ data: Data) -> Data {
-        var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
-        data.withUnsafeBytes({ _ = CC_SHA256($0.baseAddress, CC_LONG(data.count), &hash) })
-        return Data(hash)
-    }
-    
 
-    /// 截断函数：删除数据的后半部分
-    fileprivate static func t(_ data: Data) -> Data {
-        return KeyF.t(data, data.count / 2)
-    }
-    
-
-    /// 截断函数：保留数据的前n个字节
-    fileprivate static func t(_ data: Data, _ n: Int) -> Data {
-        return data.subdata(in: 0..<n)
-    }
-    
-    /// 异或函数：计算左异或右，假设左和右的长度相同
-    fileprivate static func xor(_ left: Data, _ right: Data) -> Data {
-        let leftByteArray: [UInt8] = Array(left)
-        let rightByteArray: [UInt8] = Array(right)
-        var resultByteArray: [UInt8] = [UInt8]()
-        for i in 0..<leftByteArray.count {
-            resultByteArray.append(leftByteArray[i] ^ rightByteArray[i])
-        }
-        return Data(resultByteArray)
-    }
-
-
-}
 
 fileprivate typealias Binary16 = UInt16
 fileprivate typealias MatchingKeySeed = Data
