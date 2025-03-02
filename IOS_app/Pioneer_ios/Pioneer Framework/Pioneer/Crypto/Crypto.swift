@@ -1,15 +1,15 @@
 //
 //  Crypto.swift
-//  Pioneer
+//  Pioneer for IOS
 //
-//  Created by Beh on 2021/6/3.
+//  Created by Beh on 2025/3/2.
 //
 
 import Foundation
 
 public class Crypto {
     
-    //Hash生成
+    //Hash generation
     public static func Hash(message: Data) -> Data {
         var Hash = [UInt8](repeating: 0,count: 32)
         let pHash: PioneerHash = PioneerHash()
@@ -18,7 +18,7 @@ public class Crypto {
     }
     
     
-    //MAC生成
+    // HashMAC
     public static func MAC(message: Data, key: Data) -> Data {
         var MAC = [UInt8](repeating: 0, count: 32)
         let pMAC = PioneerHMac(from: [UInt8].init(key))

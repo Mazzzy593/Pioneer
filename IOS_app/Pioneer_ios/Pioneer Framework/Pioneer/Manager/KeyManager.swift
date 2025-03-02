@@ -1,8 +1,8 @@
 //
 //  KeyManager.swift
-//  Pioneer
+//  Pioneer for IOS
 //
-//  Created by Beh on 2021/5/22.
+//  Created by Beh on 2025/3/2.
 //
 
 import Foundation
@@ -72,28 +72,22 @@ public class KeyManager {
     
     static func matchingKeys(_ secretKey: SecretKey) -> [MatchingKey] {
         let n = KeyManager.days
-        /**
-         
-         面向安全的匹配密钥种子由一个带截断的反向哈希链生成，以确保将来的密钥不能从历史密钥派生。加密散列函数为前向安全性提供了一个单向函数。截断函数通过删除中间密钥材料提供额外的保证，因此受损的哈希函数仍将保持前向安全性。
-         */
+        //面向安全的匹配密钥种子由一个带截断的反向哈希链生成，以确保将来的密钥不能从历史密钥派生。加密散列函数为前向安全性提供了一个单向函数。截断函数通过删除中间密钥材料提供额外的保证，因此受损的哈希函数仍将保持前向安全性。
         var matchingKeySeed: [MatchingKeySeed] = Array(repeating: MatchingKeySeed(), count: n + 1)
-        /**
-         最后一个匹配的密钥种子在2000天（从epoch算起超过5年）是密钥的散列。在2000天耗尽所有匹配的密钥种子之前，需要建立一个新的密钥。
-         */
+
+        //最后一个匹配的密钥种子在2000天（从epoch算起超过5年）是密钥的散列。在2000天耗尽所有匹配的密钥种子之前，需要建立一个新的密钥。
         matchingKeySeed[n] = MatchingKeySeed(Crypto.Hash(message: secretKey))
         for i in (0...n - 1).reversed() {
             matchingKeySeed[i] = MatchingKeySeed(Crypto.Hash(message: KeyF.t(matchingKeySeed[i + 1])))
         }
-        /**
-         第i天的匹配密钥是第i天与第i-1天的匹配密钥种子的异或的哈希。有必要将匹配密钥与其种子分离，因为在分散的联系人跟踪解决方案中，匹配密钥由服务器分发给所有手机进行设备上匹配。如果一个种子用于派生其他日期的种子，则发布哈希可防止攻击者建立其他种子。
-         */
+
+        //第i天的匹配密钥是第i天与第i-1天的匹配密钥种子的异或的哈希。有必要将匹配密钥与其种子分离，因为在分散的联系人跟踪解决方案中，匹配密钥由服务器分发给所有手机进行设备上匹配。如果一个种子用于派生其他日期的种子，则发布哈希可防止攻击者建立其他种子。
         var matchingKey: [MatchingKey] = Array(repeating: MatchingKey(), count: n + 1)
         for i in 1...n {
             matchingKey[i] = MatchingKey(Crypto.Hash(message: KeyF.xor(matchingKeySeed[i], matchingKeySeed[i - 1])))
         }
-        /**
-         第0天的匹配密钥派生自第0天和第- 1天的匹配密钥种子。在上面的代码中实现为特例。
-         */
+
+        //第0天的匹配密钥派生自第0天和第- 1天的匹配密钥种子。在上面的代码中实现为特例
         let matchingKeySeedMinusOne = MatchingKeySeed(Crypto.Hash(message: KeyF.t(matchingKeySeed[0])))
         matchingKey[0] = MatchingKey(Crypto.Hash(message: KeyF.xor(matchingKeySeed[0], matchingKeySeedMinusOne)))
         return matchingKey
@@ -139,9 +133,39 @@ public class KeyManager {
     }
 }
 
+// class KeyF 用于计算
+private class KeyF {
+    fileprivate static func h(_ data: Data) -> Data {
+        var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        data.withUnsafeBytes({ _ = CC_SHA256($0.baseAddress, CC_LONG(data.count), &hash) })
+        return Data(hash)
+    }
+    
+    /// 截断函数：删除数据的后半部分
+    fileprivate static func t(_ data: Data) -> Data {
+        return KeyF.t(data, data.count / 2)
+    }
+    
 
+    /// 截断函数：保留数据的前n个字节
+    fileprivate static func t(_ data: Data, _ n: Int) -> Data {
+        return data.subdata(in: 0..<n)
+    }
+    
+    /// 异或函数：计算左异或右，假设左和右的长度相同
+    fileprivate static func xor(_ left: Data, _ right: Data) -> Data {
+        let leftByteArray: [UInt8] = Array(left)
+        let rightByteArray: [UInt8] = Array(right)
+        var resultByteArray: [UInt8] = [UInt8]()
 
+        for i in 0..<leftByteArray.count {
+            resultByteArray.append(leftByteArray[i] ^ rightByteArray[i])
+        }
+        return Data(resultByteArray)
+    }
+}
 
+// 使用类型定义
 fileprivate typealias Binary16 = UInt16
 fileprivate typealias MatchingKeySeed = Data
 fileprivate typealias ContactKeySeed = Data
