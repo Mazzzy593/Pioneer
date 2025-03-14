@@ -10,14 +10,20 @@ public class UserMessage implements Serializable{
 	private User user;		//用户对象
 	private String str;     //返回值为字符串
 	private int log;
-	private String[] MatchingKeys=new String[14];
+	private String[] MatchingKeys=new String[14]; // 用于14天的matchingkeys
 	private String token;
-	//methods
+
+	//methods for user messages
 	public UserMessage() {	}
+
 	public UserMessage(int log) {
 		this.log=log;
 	}
 	public UserMessage(String str) {
+		this.str=str;
+	}
+	public UserMessage(String type,String str) {
+		this.type=type;
 		this.str=str;
 	}
 	public UserMessage(String type,User user) {
@@ -29,10 +35,7 @@ public class UserMessage implements Serializable{
 		this.user=user;
 		this.token=token;
 	}
-	public UserMessage(String type,String str) {
-		this.type=type;
-		this.str=str;
-	}
+
 	//getters and setters
 	public String getType() {
 		return type;
@@ -46,34 +49,43 @@ public class UserMessage implements Serializable{
 	public int getLog() {
 		return log;
 	}
+	public String getToken() {
+		return token;
+	}
+
+	// set str, user, type, token
+	public void setType(String type) {
+		this.type = type;
+	}
 	public void setStr(String str) {
 		this.str=str;
 	}
 	public void setUser(User user) {
 		this.user = user;
 	}
-	public void setType(String type) {
-		this.type = type;
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 	public void setLog(int log) {
 		this.log = log;
 	}
-	public String[] getMatchingKeys() {
-		return MatchingKeys;
-	}
+	// Matchingkeys
 	public void setMatchingKeys(int i,String MatchingKey) {
 		MatchingKeys[i] = MatchingKey;
 	}
-	public String getToken() {
-		return token;
+	public String[] getMatchingKeys() {
+		return MatchingKeys;
 	}
-	public void setToken(String token) {
-		this.token = token;
-	}
+
+
+
+
+	// Matchingkeys 用于匹配
 	@Override
 	public String toString() {
-		return "UserMessage [type=" + type + ", user=" + user + ", str=" + str + ", log=" + log + ", MatchingKeys="
-				+ Arrays.toString(MatchingKeys) + ", token=" + token + "]";
+		return "UserMessage [type=" + type + ", user=" + user + ", str=" + str + ", log=" + log + ",
+		 MatchingKeys=" + Arrays.toString(MatchingKeys) + ", token=" + token + "]";
 	}
 	
 }

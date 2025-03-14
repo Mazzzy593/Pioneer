@@ -45,21 +45,21 @@ public class PioneerClient {
     private SSLContext createSSLContext(){
    	 try{
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-			// local files 
-           keyStore.load(new FileInputStream("D:\\Java\\cert\\Pioneer.keystore"),"sducst".toCharArray());
+			// load local files for manage
+            keyStore.load(new FileInputStream("D:\\Java\\cert\\Pioneer.keystore"),"sducst".toCharArray());
              
-           // Create key manager
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-            keyManagerFactory.init(keyStore, "sducst".toCharArray());
-            KeyManager[] km = keyManagerFactory.getKeyManagers();
-            keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
+            // Create key manager
+            // KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+            // keyManagerFactory.init(keyStore, "sducst".toCharArray());
+            // KeyManager[] km = keyManagerFactory.getKeyManagers();
+            // keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
 
-            keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
+            // keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
 
 			// Create key manager
-			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-			keyManagerFactory.init(keyStore, "010320".toCharArray());
-			KeyManager[] km = keyManagerFactory.getKeyManagers();
+			// KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+			// keyManagerFactory.init(keyStore, "010320".toCharArray());
+			// KeyManager[] km = keyManagerFactory.getKeyManagers();
 			
             // Create trust manager
             TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance("SunX509");
@@ -88,12 +88,12 @@ public class PioneerClient {
 		 // Create socket factory
         SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-        //´´½¨SocketÀàÐÍµÄ¶ÔÏó£¬²¢Ìá¹©·þÎñÆ÷µÄÖ÷»úÃûºÍ¶Ë¿ÚºÅ
+        //ï¿½ï¿½ï¿½ï¿½Socketï¿½ï¿½ï¿½ÍµÄ¶ï¿½ï¿½ó£¬²ï¿½ï¿½á¹©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¶Ë¿Úºï¿½
         SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
         SSLSocket socket = (SSLSocket) sslSocketFactory.getDefault().createSocket();
 
         //SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket();
-        socket.connect(new InetSocketAddress(host,port), connectTimeout);//ÉèÖÃÁ¬½Ó³¬Ê±5s
+        socket.connect(new InetSocketAddress(host,port), connectTimeout);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó³ï¿½Ê±5s
         System.out.println("This is the Pioneer Client!");
 		System.out.println("Successfully connected to the server"); 
         System.out.println("SSL client started");
@@ -126,71 +126,71 @@ public class PioneerClient {
                 System.out.println("\tProtocol : "+sslSession.getProtocol());
                 System.out.println("\tCipher suite : "+sslSession.getCipherSuite());
                
-    			//³õÊ¼»¯ÊäÈëÊä³öÁ÷
+    			//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     			sc=new Scanner(System.in);
     			in=new DataInputStream(socket.getInputStream());
     			out = new DataOutputStream(socket.getOutputStream()); 
 
-    			//Í¨¹ý²Ëµ¥µ¼Òý£¬´Ó¿ØÖÆÌ¨»ñµÃÓÃ»§ÊäÈëµÄÐÅÏ¢²¢½«·µ»ØÖµ×÷ÎªÐÂ½¨µÄ¶ÔÏó
+    			//Í¨ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Îªï¿½Â½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½
     			String input=null;
     			String output="";
     			String str=null;
     			
     			String type=null;
-				//tag=0£¬±íÊ¾×¢²áÓÃ»§£º0+11Î»ÊÖ»úºÅ+2048Î»Secret_key
-				//tag=1£¬±íÊ¾ÉÏ´«Ç°ÑéÖ¤token
-		        //tag=2£¬±íÊ¾ÉêÇëtoken
-		        //tag=3.±íÊ¾×Ô¶¯ÉÏ´«14ÌìMatching_key
-		        //tag=4¡£±íÊ¾Í¨¹ýtokenÑéÖ¤ºóÉÏ´«14ÌìMatching_key
-    			//tag=5¡£±íÊ¾ÏÂÔØ·þÎñÆ÷´æ´¢µÄInfected_usersµÄ14ÌìµÄMatching_keys
-    			//tag=6¡£±íÊ¾Ã¿Ìì¶¨Ê±µÄ¸üÐÂµÄ¹ý³Ì
+				//tag=0ï¿½ï¿½ï¿½ï¿½Ê¾×¢ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½0+11Î»ï¿½Ö»ï¿½ï¿½ï¿½+2048Î»Secret_key
+				//tag=1ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ï´ï¿½Ç°ï¿½ï¿½Ö¤token
+		        //tag=2ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½token
+		        //tag=3.ï¿½ï¿½Ê¾ï¿½Ô¶ï¿½ï¿½Ï´ï¿½14ï¿½ï¿½Matching_key
+		        //tag=4ï¿½ï¿½ï¿½ï¿½Ê¾Í¨ï¿½ï¿½tokenï¿½ï¿½Ö¤ï¿½ï¿½ï¿½Ï´ï¿½14ï¿½ï¿½Matching_key
+    			//tag=5ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ´¢ï¿½ï¿½Infected_usersï¿½ï¿½14ï¿½ï¿½ï¿½Matching_keys
+    			//tag=6ï¿½ï¿½ï¿½ï¿½Ê¾Ã¿ï¿½ì¶¨Ê±ï¿½Ä¸ï¿½ï¿½ÂµÄ¹ï¿½ï¿½ï¿½
     			item = View.MenuView();
     			switch(item) {
-    				//¸ù¾Ý²Ëµ¥Ñ¡Ôñ£¬³õÊ¼»¯ÀàÐÍ
-    				case 0://ÍË³ö
+    				//ï¿½ï¿½ï¿½Ý²Ëµï¿½Ñ¡ï¿½ñ£¬³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    				case 0://ï¿½Ë³ï¿½
     					type="Exit";
     					break;
-    				case 1://ÊÖ»úºÅ×¢²á
+    				case 1://ï¿½Ö»ï¿½ï¿½ï¿½×¢ï¿½ï¿½
     					type="LoginUser";
     					output="0";
     					break;
-    				case 2://·þÎñÆ÷¼ì²âtokenÊÇ·ñÕýÈ·²¢ºóÐøÉÏ´«
+    				case 2://ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tokenï¿½Ç·ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½
     					type="CheckToken";
     					output="1";
     					break;
-    				case 3://Ò½ÎñÈËÔ±¹ÜÀíÔ±ÉêÇëToken
+    				case 3://Ò½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ï¿½Token
     					type="ApplyToken";
     					output="2";
     					break;
-    				case 4://×Ô¶¯ÉÏ´«
+    				case 4://ï¿½Ô¶ï¿½ï¿½Ï´ï¿½
     					type="AutoUpload";
     					output="4";
     					break;
-    				case 5://¿Í»§¶ËÏÂÔØ¸ÐÈ¾ÕßÐÅÏ¢
+    				case 5://ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½È¾ï¿½ï¿½ï¿½ï¿½Ï¢
     					type="Download";
     					break;
-    				case 6://¸üÐÂ¸ÐÈ¾ÕßÒÔ¼°½Ó´¥ÕßÐÅÏ¢
+    				case 6://ï¿½ï¿½ï¿½Â¸ï¿½È¾ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     					type="Update";
     					break;
     			 	}
-    			//Êä³ö¹ý³Ì
-    			output+=MenuView();//ÒªÊä³öµÄ×Ö·û´®
-    			System.out.println("·¢ËÍµ½·þÎñÆ÷³¤¶ÈÎª:"+output.length());
-    			//¸ù¾ÝÊäÈëµÄ³¤¶È¶¯Ì¬µÄ·ÖÅä
+    			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    			output+=MenuView();//Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½
+    			System.out.println("ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îª:"+output.length());
+    			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½È¶ï¿½Ì¬ï¿½Ä·ï¿½ï¿½ï¿½
     			byte[] out_bytes=new byte[output.length()];
     			out_bytes=output.getBytes();
     			
     			//bytes=input;
-    			//·¢ËÍÓÃ»§ÐÅÏ¢µ½·þÎñÆ÷
+    			//ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     			out.write(out_bytes);
     			out.flush();
-    			System.out.println("ÒÑ·¢ËÍÐÅÏ¢µ½·þÎñ¶Ë~:"+output);
+    			System.out.println("ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~:"+output);
     			
-    			//¶ÁÈë¹ý³Ì, ¶ÁÈ¡·þÎñ¶Ë»Ø·¢µÄÑéÖ¤½á¹û
+    			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ë»Ø·ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½
     			//if(!type.equals("AutoUpload")) {
     				try { 
         				str=in.readUTF();
-        				System.out.println("´Ó·þÎñÆ÷ÊÕµ½ÑéÖ¤½á¹û£º"+str);
+        				System.out.println("ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½"+str);
         				if(type.equals("Download")) {
         					int i =0;
         					int index1=0;
@@ -213,13 +213,13 @@ public class PioneerClient {
             		        out_bytes=output.getBytes();
             		        out.write(out_bytes);
             		    	out.flush();
-            		    	System.out.println("ÒÑ·¢ËÍÐÅÏ¢µ½·þÎñ¶Ë~:"+output);
-            		    	//System.out.println("ÒÑ·¢ËÍÐÅÏ¢µ½·þÎñ¶Ë~:"+out_bytes);
+            		    	System.out.println("ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~:"+output);
+            		    	//System.out.println("ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½~:"+out_bytes);
             		    	
             		    	str=in.readUTF();
-            				System.out.println("´Ó·þÎñÆ÷ÊÕµ½ÑéÖ¤½á¹û£º"+str);
+            				System.out.println("ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ï¿½ï¿½"+str);
             		    }
-        		        //0±íÊ¾×¢²á³É¹¦,1±íÊ¾ÊÖ»úºÅÖØ¸´£¬2±íÊ¾ÃÜÔ¿ÖØ¸´
+        		        //0ï¿½ï¿½Ê¾×¢ï¿½ï¿½É¹ï¿½,1ï¿½ï¿½Ê¾ï¿½Ö»ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½2ï¿½ï¿½Ê¾ï¿½ï¿½Ô¿ï¿½Ø¸ï¿½
         			}catch(Exception e) {
         				e.printStackTrace();
         			}
@@ -227,8 +227,8 @@ public class PioneerClient {
     			}catch(IOException e) {
     				e.printStackTrace();
     		}finally {
-    			System.out.println("¿Í»§¶ËÏÂÏß£¬ÊÍ·Å×ÊÔ´");
-    			//ÊÍ·Å×ÊÔ´
+    			System.out.println("ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½Í·ï¿½ï¿½ï¿½Ô´");
+    			//ï¿½Í·ï¿½ï¿½ï¿½Ô´
     			if(null!=out) {
     				try {
     					out.close();
@@ -262,19 +262,19 @@ public class PioneerClient {
 		while(true) {
 			String input=null;
 			switch(item) {
-			case 0://ÍË³ö
+			case 0://ï¿½Ë³ï¿½
 				System.exit(-1);
 				break;
-			case 1://×¢²áÓÃ»§
+			case 1://×¢ï¿½ï¿½ï¿½Ã»ï¿½
 				input= View.loginUserMenuView();
 				return input;
-			case 2://ÓÃ»§ÉÏ´«token
+			case 2://ï¿½Ã»ï¿½ï¿½Ï´ï¿½token
 				input=View.CheckTokenMenuView();
 				return input;
-			case 3://Ò½ÎñÈËÔ±tokenÉêÇë
+			case 3://Ò½ï¿½ï¿½ï¿½ï¿½Ô±tokenï¿½ï¿½ï¿½ï¿½
 				input= View.ApplyTokenMenuView();
 				return input;
-			case 4://×Ô¶¯ÉÏ´«Matching_key
+			case 4://ï¿½Ô¶ï¿½ï¿½Ï´ï¿½Matching_key
 				input=View.AutoUploadView();
 				return input;
 			case 5:
