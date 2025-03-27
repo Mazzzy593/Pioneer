@@ -137,6 +137,7 @@ public class BLEDevice extends Device {
         return operatingSystem;
     }
 
+
     public void operatingSystem(DeviceOperatingSystem operatingSystem) {
         lastUpdatedAt = new Date();
         // 设置忽略时间戳
@@ -160,7 +161,7 @@ public class BLEDevice extends Device {
             delegate.device(this, DeviceAttribute.operatingSystem);
         }
     }
-
+  
     /// 时间判断之后忽略该设备
     public boolean ignore() {
         if (ignoreUntil == null) {
@@ -201,6 +202,7 @@ public class BLEDevice extends Device {
         lastUpdatedAt = new Date();
         delegate.device(this, DeviceAttribute.rssi);
     }
+
 
     public void legacyPayloadCharacteristic(BluetoothGattCharacteristic characteristic) {
         this.legacyPayloadCharacteristic = characteristic;

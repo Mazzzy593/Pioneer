@@ -1,3 +1,6 @@
+// Android APP 
+// Token activity
+
 package com.ABC.pioneer.app;
 
 import android.content.SharedPreferences;
@@ -18,7 +21,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-
+// token activity
 public class TokenActivity extends AppCompatActivity {
     private Button tokenbtn;
     private EditText tokenet;
@@ -87,8 +90,4 @@ public class TokenActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
 }
