@@ -20,12 +20,12 @@ import javax.net.ssl.TrustManagerFactory;
 
 import com.view.View;
 
-// Pioneer Client
+// HTTPS的Client实现
 public class PioneerClient {
 	static int item;
-	// host ip
-    private String host = "192.168.43.19";
-	// https connection
+	//private String host = "172.25.226.143";
+   //private String host = "192.168.43.19";
+    private String host = "95.179.230.181";
     private int port = 446;
     
     public static void main(String[] args) throws UnknownHostException, IOException{
@@ -45,16 +45,15 @@ public class PioneerClient {
     private SSLContext createSSLContext(){
    	 try{
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-			// local files 
-           keyStore.load(new FileInputStream("D:\\Java\\cert\\Pioneer.keystore"),"sducst".toCharArray());
+           // keyStore.load(new FileInputStream("D:\\Java\\cert\\Pioneer.keystore"),"sducst".toCharArray());
              
-           // Create key manager
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
-            keyManagerFactory.init(keyStore, "sducst".toCharArray());
-            KeyManager[] km = keyManagerFactory.getKeyManagers();
-            keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
+//            // Create key manager
+//            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+//            keyManagerFactory.init(keyStore, "sducst".toCharArray());
+//            KeyManager[] km = keyManagerFactory.getKeyManagers();
+//            keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
 
-            keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
+            //keyStore.load(new FileInputStream("D:\\Java\\cert\\server.p12"), "010320".toCharArray());
 
 			// Create key manager
 			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
@@ -87,14 +86,12 @@ public class PioneerClient {
 		SSLContext sslContext = this.createSSLContext();
 		 // Create socket factory
         SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
         //创建Socket类型的对象，并提供服务器的主机名和端口号
-        SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
-        SSLSocket socket = (SSLSocket) sslSocketFactory.getDefault().createSocket();
-
-        //SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket();
+        //SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket(this.host, this.port);
+        //SSLSocket socket = (SSLSocket) sslSocketFactory.getDefault().createSocket();
+        SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket();
         socket.connect(new InetSocketAddress(host,port), connectTimeout);//设置连接超时5s
-        System.out.println("This is the Pioneer Client!");
+        System.out.println("This is SDU Pioneer Client!");
 		System.out.println("Successfully connected to the server"); 
         System.out.println("SSL client started");
      
@@ -136,6 +133,7 @@ public class PioneerClient {
     			String output="";
     			String str=null;
     			
+    			//while(true) {
     			String type=null;
 				//tag=0，表示注册用户：0+11位手机号+2048位Secret_key
 				//tag=1，表示上传前验证token
@@ -151,7 +149,7 @@ public class PioneerClient {
     					type="Exit";
     					break;
     				case 1://手机号注册
-    					type="LoginUser";
+    					type="LoginUser";//015536471788123
     					output="0";
     					break;
     				case 2://服务器检测token是否正确并后续上传
@@ -159,7 +157,7 @@ public class PioneerClient {
     					output="1";
     					break;
     				case 3://医务人员管理员申请Token
-    					type="ApplyToken";
+    					type="ApplyToken";//2doctor1doctor1
     					output="2";
     					break;
     				case 4://自动上传
@@ -186,7 +184,8 @@ public class PioneerClient {
     			out.flush();
     			System.out.println("已发送信息到服务端~:"+output);
     			
-    			//读入过程, 读取服务端回发的验证结果
+    			//读入过程
+    			//读取服务端回发的验证结果
     			//if(!type.equals("AutoUpload")) {
     				try { 
         				str=in.readUTF();

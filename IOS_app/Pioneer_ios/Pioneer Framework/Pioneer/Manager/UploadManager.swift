@@ -1,8 +1,8 @@
 //
 //  UploadManager.swift
-//  Pioneer
+//  Pioneer for IOS
 //
-//  Created by Beh on 2021/5/22.
+//  Created by Beh on 2025/3/2.
 //
 
 import Foundation
