@@ -21,6 +21,31 @@ import java.util.List;
 import java.util.Queue;
 
 public class BLEDevice extends Device {
+    /// BLE characteristics特征
+    private BluetoothGattCharacteristic signalCharacteristic = null;
+    private BluetoothGattCharacteristic payloadCharacteristic = null;
+    private BluetoothGattCharacteristic legacyPayloadCharacteristic = null;
+    protected byte[] signalCharacteristicWriteValue = null;
+    protected Queue<byte[]> signalCharacteristicWriteQueue = null;
+
+    private BluetoothGattCharacteristic modelCharacteristic = null;
+    private String model = null;
+    private BluetoothGattCharacteristic deviceNameCharacteristic = null;
+    private String deviceName = null;
+
+    /// 跟踪连接时间戳
+    private Date lastDiscoveredAt = null;
+    private Date lastConnectedAt = null;
+
+    /// 有效负载数据已与此对等方共享
+    protected final List<PayloadData> payloadSharingData = new ArrayList<>();
+
+    /// 跟踪写入时间戳
+    private Date lastWritePayloadAt = null;
+    private Date lastWriteRssiAt = null;
+    private Date lastWritePayloadSharingAt = null;
+
+
     // 伪设备地址，用于跟踪不断更改地址的Android设备。
     private PseudoDeviceAddress pseudoDeviceAddress = null;
     // 用于侦听属性更新事件的委托
@@ -46,30 +71,6 @@ public class BLEDevice extends Device {
     private TimeInterval ignoreForDuration = null;
     private Date ignoreUntil = null;
     private ScanRecord scanRecord = null;
-
-    /// BLE characteristics特征
-    private BluetoothGattCharacteristic signalCharacteristic = null;
-    private BluetoothGattCharacteristic payloadCharacteristic = null;
-    private BluetoothGattCharacteristic legacyPayloadCharacteristic = null;
-    protected byte[] signalCharacteristicWriteValue = null;
-    protected Queue<byte[]> signalCharacteristicWriteQueue = null;
-
-    private BluetoothGattCharacteristic modelCharacteristic = null;
-    private String model = null;
-    private BluetoothGattCharacteristic deviceNameCharacteristic = null;
-    private String deviceName = null;
-
-    /// 跟踪连接时间戳
-    private Date lastDiscoveredAt = null;
-    private Date lastConnectedAt = null;
-
-    /// 有效负载数据已与此对等方共享
-    protected final List<PayloadData> payloadSharingData = new ArrayList<>();
-
-    /// 跟踪写入时间戳
-    private Date lastWritePayloadAt = null;
-    private Date lastWriteRssiAt = null;
-    private Date lastWritePayloadSharingAt = null;
 
     public TimeInterval timeIntervalSinceConnected() {
         if (state() != DeviceState.connected) {
@@ -116,17 +117,7 @@ public class BLEDevice extends Device {
         }
     }
 
-    //外围设备信息
-    public BluetoothDevice peripheral() {
-        return peripheral;
-    }
-
-    public void peripheral(BluetoothDevice peripheral) {
-        if (this.peripheral != peripheral) {
-            this.peripheral = peripheral;
-            lastUpdatedAt = new Date();
-        }
-    }
+   
 
     //设备状态
     public DeviceState state() {
@@ -181,22 +172,16 @@ public class BLEDevice extends Device {
         return false;
     }
 
-    public PayloadData payloadData() {
-        return payloadData;
+    //外围设备信息
+    public BluetoothDevice peripheral() {
+        return peripheral;
     }
 
-    public void payloadData(PayloadData payloadData) {
-        this.payloadData = payloadData;
-        lastPayloadDataUpdate = new Date();
-        lastUpdatedAt = lastPayloadDataUpdate;
-        delegate.device(this, DeviceAttribute.payloadData);
-    }
-
-    public TimeInterval timeIntervalSinceLastPayloadDataUpdate() {
-        if (lastPayloadDataUpdate == null) {
-            return TimeInterval.never;
+    public void peripheral(BluetoothDevice peripheral) {
+        if (this.peripheral != peripheral) {
+            this.peripheral = peripheral;
+            lastUpdatedAt = new Date();
         }
-        return new TimeInterval((new Date().getTime() - lastPayloadDataUpdate.getTime()) / 1000);
     }
 
     public void immediateSendData(Data immediateSendData) {
@@ -234,6 +219,26 @@ public class BLEDevice extends Device {
         lastUpdatedAt = new Date();
         delegate.device(this, DeviceAttribute.txPower);
     }
+    
+    public PayloadData payloadData() {
+        return payloadData;
+    }
+
+    public void payloadData(PayloadData payloadData) {
+        this.payloadData = payloadData;
+        lastPayloadDataUpdate = new Date();
+        lastUpdatedAt = lastPayloadDataUpdate;
+        delegate.device(this, DeviceAttribute.payloadData);
+    }
+
+    public TimeInterval timeIntervalSinceLastPayloadDataUpdate() {
+        if (lastPayloadDataUpdate == null) {
+            return TimeInterval.never;
+        }
+        return new TimeInterval((new Date().getTime() - lastPayloadDataUpdate.getTime()) / 1000);
+    }
+
+    
 
     public Calibration calibration() {
         if (txPower == null) {
