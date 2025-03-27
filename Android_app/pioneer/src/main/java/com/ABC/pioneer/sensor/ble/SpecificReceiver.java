@@ -208,19 +208,7 @@ public class SpecificReceiver extends BluetoothGattCallback implements Receiver 
         private long timeSincelastStateChange(final long now) {
             return now - lastStateChangeAt;
         }
-
-        private BluetoothLeScanner bluetoothLeScanner() {
-            final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter == null) {
-                return null;
-            }
-            final BluetoothLeScanner bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
-            if (bluetoothLeScanner == null) {
-                return null;
-            }
-            return bluetoothLeScanner;
-        }
-
+        // 记录时间
         @Override
         public void bleTimer(final long now) {
             switch (scanLoopState) {
@@ -279,6 +267,21 @@ public class SpecificReceiver extends BluetoothGattCallback implements Receiver 
                 }
             }
         }
+
+
+        private BluetoothLeScanner bluetoothLeScanner() {
+            final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter == null) {
+                return null;
+            }
+            final BluetoothLeScanner bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
+            if (bluetoothLeScanner == null) {
+                return null;
+            }
+            return bluetoothLeScanner;
+        }
+
+
     }
 
 
@@ -436,36 +439,9 @@ public class SpecificReceiver extends BluetoothGattCallback implements Receiver 
         return devices;
     }
 
-    /// 扫描结果是否包括用于传感器服务的广告？
-    private static boolean hasSensorService(final ScanResult scanResult) {
-        final ScanRecord scanRecord = scanResult.getScanRecord();
-        if (scanRecord == null) {
-            return false;
-        }
-        final List<ParcelUuid> serviceUuids = scanRecord.getServiceUuids();
-        if (serviceUuids == null || serviceUuids.size() == 0) {
-            return false;
-        }
-        for (ParcelUuid serviceUuid : serviceUuids) {
-            if (serviceUuid.getUuid().equals(Configurations.serviceUUID)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
-    /// 扫描结果是否表明该设备是Apple制造的？
-    private static boolean isAppleDevice(final ScanResult scanResult) {
-        final ScanRecord scanRecord = scanResult.getScanRecord();
-        if (scanRecord == null) {
-            return false;
-        }
-        final byte[] data = scanRecord.getManufacturerSpecificData(Configurations.manufacturerIdForApple);
-        return data != null;
-    }
 
     // 信息清理
-
     /// 删除超过15分钟未更新的设备，
     // 因为UUID在超出范围20分钟后可能已更改，因此需要进行发现。
     private void taskRemoveExpiredDevices() {
@@ -487,6 +463,36 @@ public class SpecificReceiver extends BluetoothGattCallback implements Receiver 
                 device.state(DeviceState.disconnected);
             }
         }
+    }
+
+    
+    /// 扫描结果是否表明该设备是Apple制造的？
+    private static boolean isAppleDevice(final ScanResult scanResult) {
+        final ScanRecord scanRecord = scanResult.getScanRecord();
+        if (scanRecord == null) {
+            return false;
+        }
+        final byte[] data = scanRecord.getManufacturerSpecificData(Configurations.manufacturerIdForApple);
+        return data != null;
+    }
+
+
+    /// 扫描结果是否包括用于传感器服务的广告？
+    private static boolean hasSensorService(final ScanResult scanResult) {
+        final ScanRecord scanRecord = scanResult.getScanRecord();
+        if (scanRecord == null) {
+            return false;
+        }
+        final List<ParcelUuid> serviceUuids = scanRecord.getServiceUuids();
+        if (serviceUuids == null || serviceUuids.size() == 0) {
+            return false;
+        }
+        for (ParcelUuid serviceUuid : serviceUuids) {
+            if (serviceUuid.getUuid().equals(Configurations.serviceUUID)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 
@@ -594,24 +600,10 @@ public class SpecificReceiver extends BluetoothGattCallback implements Receiver 
         return success;
     }
 
+    
     // BluetoothStateManagerDelegate
 
-    @Override
-    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        final BLEDevice device = database.
 
-                device(gatt.getDevice());
-        if (newState == BluetoothProfile.STATE_CONNECTED) {
-            device.state(DeviceState.connected);
-            gatt.discoverServices();
-        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            gatt.close();
-            device.state(DeviceState.disconnected);
-            if (status != 0) {
-            }
-        } else {
-        }
-    }
 
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
@@ -666,6 +658,23 @@ public class SpecificReceiver extends BluetoothGattCallback implements Receiver 
         nextTask(gatt);
     }
 
+    @Override
+    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+        final BLEDevice device = database.
+
+                device(gatt.getDevice());
+        if (newState == BluetoothProfile.STATE_CONNECTED) {
+            device.state(DeviceState.connected);
+            gatt.discoverServices();
+        } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            gatt.close();
+            device.state(DeviceState.disconnected);
+            if (status != 0) {
+            }
+        } else {
+        }
+    }
+    
     /// 获取Bluetooth service characteristic，如果未找到，则为null。
     private BluetoothGattCharacteristic serviceCharacteristic(BluetoothGatt gatt, UUID service, UUID characteristic) {
         try {
